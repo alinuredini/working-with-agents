@@ -2,10 +2,14 @@
   "name": "working-with-agents",
   "version": "0.1.0",
   "description": "Onboard coding agents like a senior hire — scaffold AGENTS.md, DESIGN.md, and tool wiring.",
+  "keywords": ["agents", "ai", "coding-agents", "claude-code", "codex", "cursor", "agents-md", "cli", "scaffold", "onboarding"],
   "type": "module",
   "bin": { "working-with-agents": "bin/cli.js" },
   "files": ["bin", "src", "templates"],
   "engines": { "node": ">=18" },
   "scripts": { "test": "node --test" },
+  "repository": { "type": "git", "url": "git+https://github.com/alinuredini/working-with-agents.git" },
+  "homepage": "https://github.com/alinuredini/working-with-agents#readme",
+  "bugs": { "url": "https://github.com/alinuredini/working-with-agents/issues" },
   "license": "MIT"
 }
