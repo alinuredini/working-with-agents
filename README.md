@@ -62,11 +62,23 @@ An agent optimized to agree with you is a worse collaborator than one allowed to
 say "this is the wrong approach." Ask for the disagreement explicitly. You want a
 sparring partner, not a yes-machine.
 
+**8. Design is context too.**
+Taste is something an agent re-guesses every session — component library, spacing,
+color, motion. Write it down like everything else: put your tokens, component
+conventions, and design non-negotiables in a doc the agent reads (`DESIGN.md`) and
+point `AGENTS.md` at it. Don't author it by hand — have the agent read your
+existing styles and draft it. See [templates/DESIGN.md](templates/DESIGN.md).
+
 ## What's in here
 
 - **[templates/AGENTS.md](templates/AGENTS.md)** — the drop-in file. Copy it into
   any repo, fill the blanks, and your agent onboards itself. This is the important
   one.
+- **[templates/DESIGN.md](templates/DESIGN.md)** — the design chapter: a scaffold
+  (with a one-time generator) for your tokens, component conventions, and design
+  non-negotiables. Point `AGENTS.md` at it.
+- **[examples/DESIGN.md](examples/DESIGN.md)** — a complete, filled-in design
+  chapter to crib the shape from.
 - **[templates/verification-checklist.md](templates/verification-checklist.md)** —
   a short "before you call it done" list to paste into a PR or an agent doc.
 - **[tools.md](tools.md)** — where each tool reads its config, and how to mount one
@@ -79,6 +91,9 @@ sparring partner, not a yes-machine.
    your known traps. Twenty minutes, once.
 3. Mount it into your tool (see [tools.md](tools.md)). For most tools that's zero
    extra work; for Claude Code, add a one-line `CLAUDE.md` that imports it.
+4. For design work, add [templates/DESIGN.md](templates/DESIGN.md) too — generate
+   it (paste the recipe at the top of the file to your agent) or fill it by hand.
+   The `AGENTS.md` template already points at it.
 
 That's the whole system. Everything else is refinement.
 
