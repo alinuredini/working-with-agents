@@ -32,3 +32,11 @@ test('init --yes creates files in target dir', () => {
 test('unknown command exits non-zero', () => {
   assert.throws(() => execFileSync('node', [CLI, 'bogus'], { encoding: 'utf8', stdio: 'pipe' }));
 });
+
+test('parseArgs reads --install-skills and --no-skills', () => {
+  const a = parseArgs(['init', '--install-skills']);
+  assert.equal(a.installSkills, true);
+  assert.equal(a.noSkills, false);
+  const b = parseArgs(['init', '--no-skills']);
+  assert.equal(b.noSkills, true);
+});

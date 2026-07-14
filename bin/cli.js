@@ -18,10 +18,12 @@ Options:
   --dir <path>   Target directory (default: current directory)
   --help, -h     Show this help
   --version, -v  Show version
+  --install-skills  Set up your agent skills (declare/install for the chosen tool)
+  --no-skills       Skip the skill setup step
 `;
 
 export function parseArgs(argv) {
-  const args = { _: [], force: false, yes: false, dir: undefined, help: false, version: false };
+  const args = { _: [], force: false, yes: false, dir: undefined, help: false, version: false, installSkills: false, noSkills: false };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--force') args.force = true;
@@ -29,6 +31,8 @@ export function parseArgs(argv) {
     else if (a === '--help' || a === '-h') args.help = true;
     else if (a === '--version' || a === '-v') args.version = true;
     else if (a === '--dir') args.dir = argv[++i];
+    else if (a === '--install-skills') args.installSkills = true;
+    else if (a === '--no-skills') args.noSkills = true;
     else args._.push(a);
   }
   return args;
@@ -41,7 +45,7 @@ async function main() {
   if (args._[0] !== 'init') { console.error(HELP); return 1; }
 
   console.log('Onboarding this repo…\n');
-  const { results } = await init({ dir: args.dir || process.cwd(), yes: args.yes, force: args.force });
+  const { results } = await init({ dir: args.dir || process.cwd(), yes: args.yes, force: args.force, installSkills: args.installSkills, noSkills: args.noSkills });
   for (const r of results) {
     if (r.written) console.log(`  created ${r.file}`);
     else if (r.reason === 'exists') console.log(`  skipped ${r.file} (exists; --force to overwrite)`);
