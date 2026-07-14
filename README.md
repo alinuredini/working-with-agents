@@ -86,6 +86,17 @@ existing styles and draft it. See [templates/DESIGN.md](templates/DESIGN.md).
 
 ## Quick start
 
+**Fastest — the CLI:**
+
+```bash
+npx working-with-agents init
+```
+
+It detects your stack, asks a handful of pre-filled questions, and writes a
+filled `AGENTS.md` (+ optional `DESIGN.md`) wired to your agent tool.
+
+**Or by hand:**
+
 1. Copy [templates/AGENTS.md](templates/AGENTS.md) into the root of your repo.
 2. Fill in the blanks — stack, run/test/build commands, the map to your code, and
    your known traps. Twenty minutes, once.
