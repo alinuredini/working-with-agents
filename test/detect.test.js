@@ -48,3 +48,19 @@ test('runScript formats per package manager', () => {
   assert.equal(runScript('bun', 'test'), 'bun run test');
   assert.equal(runScript('npm', 'dev'), 'npm run dev');
 });
+
+test('detectPackageManager drives dev/build command per lockfile', () => {
+  const pnpm = fixture({ 'package.json': JSON.stringify({ scripts: { dev: 'vite' } }), 'pnpm-lock.yaml': '' });
+  assert.equal(detect(pnpm).dev, 'pnpm dev');
+  const yarn = fixture({ 'package.json': JSON.stringify({ scripts: { dev: 'vite' } }), 'yarn.lock': '' });
+  assert.equal(detect(yarn).dev, 'yarn dev');
+  const bun = fixture({ 'package.json': JSON.stringify({ scripts: { build: 'x' } }), 'bun.lockb': '' });
+  assert.equal(detect(bun).build, 'bun run build');
+});
+
+test('tool detection: cursor and codex branches', () => {
+  const cur = fixture({ '.cursor/rules/agents.mdc': '' });
+  assert.equal(detect(cur).tool, 'cursor');
+  const cdx = fixture({ 'AGENTS.md': '# a' });
+  assert.equal(detect(cdx).tool, 'codex');
+});
