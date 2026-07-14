@@ -4,6 +4,8 @@ import { mkdtempSync, writeFileSync, readFileSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { init } from '../src/init.js';
+import { runSkillSetup } from '../src/init.js';
+import { mkdirSync as mkdir2, writeFileSync as wf2, readFileSync as rf2, existsSync as ex2 } from 'node:fs';
 
 function repo() {
   const dir = mkdtempSync(join(tmpdir(), 'wa-init-'));
@@ -43,4 +45,43 @@ test('init --yes re-run skips existing files', async () => {
   writeFileSync(join(dir, 'AGENTS.md'), 'HAND-EDITED');
   await init({ dir, yes: true }); // no force
   assert.equal(readFileSync(join(dir, 'AGENTS.md'), 'utf8'), 'HAND-EDITED');
+});
+
+function fakeHomeForInit() { // mirrors skills fixture
+  const home = mkdtempSync(join(tmpdir(), 'wa-ihome-'));
+  const c = join(home, '.claude');
+  const w = (rel, obj) => { const p = join(c, rel); mkdir2(join(p, '..'), { recursive: true }); wf2(p, typeof obj === 'string' ? obj : JSON.stringify(obj)); };
+  w('settings.json', { enabledPlugins: { 'ponytail@ponytail': true }, extraKnownMarketplaces: { ponytail: { source: { source: 'github', repo: 'DietrichGebert/ponytail' } } } });
+  w('plugins/known_marketplaces.json', { ponytail: { source: { source: 'github', repo: 'DietrichGebert/ponytail' } } });
+  w('plugins/marketplaces/ponytail/.claude-plugin/marketplace.json', { plugins: [{ name: 'ponytail', source: './' }] });
+  return home;
+}
+
+test('init: bare --yes skips the skills step (no .claude/settings.json)', async () => {
+  const dir = repo(); // existing helper: package.json + components.json
+  await init({ dir, yes: true, home: fakeHomeForInit() });
+  assert.equal(ex2(join(dir, '.claude', 'settings.json')), false);
+});
+
+test('init: --install-skills (claude) writes merged .claude/settings.json', async () => {
+  const dir = repo();
+  await init({ dir, yes: true, installSkills: true, home: fakeHomeForInit(), log: () => {} });
+  const s = JSON.parse(rf2(join(dir, '.claude', 'settings.json'), 'utf8'));
+  assert.equal(s.enabledPlugins['ponytail@ponytail'], true);
+  assert.ok(s.extraKnownMarketplaces.ponytail);
+});
+
+test('runSkillSetup: installer runs when binary present, prints when absent', async () => {
+  const home = fakeHomeForInit();
+  const dir = mkdtempSync(join(tmpdir(), 'wa-run-'));
+  const calls = []; const logs = [];
+  const selected = [{ plugin: 'ponytail', marketplace: 'ponytail' }];
+  // present
+  runSkillSetup({ home, repoDir: dir, tool: 'antigravity', selectedPlugins: selected, selectedLocalSkills: [], which: () => true, exec: (argv) => calls.push(argv), log: (m) => logs.push(m) });
+  assert.deepEqual(calls[0], ['agy', 'plugin', 'install', 'https://github.com/DietrichGebert/ponytail']);
+  // absent
+  calls.length = 0;
+  runSkillSetup({ home, repoDir: dir, tool: 'antigravity', selectedPlugins: selected, selectedLocalSkills: [], which: () => false, exec: (argv) => calls.push(argv), log: (m) => logs.push(m) });
+  assert.equal(calls.length, 0);
+  assert.ok(logs.some((m) => /agy plugin install/.test(m)));
 });
