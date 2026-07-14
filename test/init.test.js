@@ -4,7 +4,7 @@ import { mkdtempSync, writeFileSync, readFileSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { init } from '../src/init.js';
-import { runSkillSetup } from '../src/init.js';
+import { runSkillSetup, TOOL_CHOICES } from '../src/init.js';
 import { mkdirSync as mkdir2, writeFileSync as wf2, readFileSync as rf2, existsSync as ex2 } from 'node:fs';
 
 function repo() {
@@ -84,4 +84,18 @@ test('runSkillSetup: installer runs when binary present, prints when absent', as
   runSkillSetup({ home, repoDir: dir, tool: 'antigravity', selectedPlugins: selected, selectedLocalSkills: [], which: () => false, exec: (argv) => calls.push(argv), log: (m) => logs.push(m) });
   assert.equal(calls.length, 0);
   assert.ok(logs.some((m) => /agy plugin install/.test(m)));
+});
+
+test('TOOL_CHOICES offers Pi and Gemini so installer tools are reachable', () => {
+  const vals = TOOL_CHOICES.map((c) => c.value);
+  assert.ok(vals.includes('pi'));
+  assert.ok(vals.includes('gemini'));
+});
+
+test('runSkillSetup: gemini runs the gemini installer when present', () => {
+  const home = fakeHomeForInit();
+  const dir = mkdtempSync(join(tmpdir(), 'wa-gem-'));
+  const calls = [];
+  runSkillSetup({ home, repoDir: dir, tool: 'gemini', selectedPlugins: [{ plugin: 'ponytail', marketplace: 'ponytail' }], selectedLocalSkills: [], which: () => true, exec: (argv) => calls.push(argv), log: () => {} });
+  assert.deepEqual(calls[0], ['gemini', 'extensions', 'install', 'https://github.com/DietrichGebert/ponytail']);
 });

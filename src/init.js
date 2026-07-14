@@ -12,6 +12,8 @@ export const TOOL_CHOICES = [
   { label: 'Codex', value: 'codex' },
   { label: 'Cursor', value: 'cursor' },
   { label: 'Antigravity', value: 'antigravity' },
+  { label: 'Pi', value: 'pi' },
+  { label: 'Gemini', value: 'gemini' },
   { label: 'Other', value: 'other' },
 ];
 
