@@ -63,3 +63,68 @@ test('commandExists finds a binary on a fake PATH', () => {
   assert.equal(commandExists('agy', bindir), true);
   assert.equal(commandExists('nope', bindir), false);
 });
+
+import { buildProjectSettings, mergeProjectSettings, installCommand, vendorSkill, enabledPluginList, planSkillSetup } from '../src/skills.js';
+import { existsSync, readFileSync, mkdtempSync as mkd } from 'node:fs';
+
+test('buildProjectSettings keys plugins and omits official marketplace', () => {
+  const km = { ponytail: { source: { source: 'github', repo: 'DietrichGebert/ponytail' } } };
+  const s = buildProjectSettings([
+    { plugin: 'superpowers', marketplace: 'claude-plugins-official' },
+    { plugin: 'ponytail', marketplace: 'ponytail' },
+  ], km);
+  assert.equal(s.enabledPlugins['superpowers@claude-plugins-official'], true);
+  assert.equal(s.enabledPlugins['ponytail@ponytail'], true);
+  assert.ok(s.extraKnownMarketplaces.ponytail);
+  assert.ok(!s.extraKnownMarketplaces['claude-plugins-official']);
+});
+
+test('mergeProjectSettings preserves existing keys, merges plugins', () => {
+  const existing = { permissions: { allow: ['x'] }, enabledPlugins: { 'a@m': true } };
+  const merged = mergeProjectSettings(existing, { enabledPlugins: { 'b@m': true } });
+  assert.deepEqual(merged.permissions, { allow: ['x'] });
+  assert.equal(merged.enabledPlugins['a@m'], true);
+  assert.equal(merged.enabledPlugins['b@m'], true);
+});
+
+test('installCommand builds correct argv per tool', () => {
+  assert.deepEqual(installCommand('antigravity', 'o/r'), ['agy', 'plugin', 'install', 'https://github.com/o/r']);
+  assert.deepEqual(installCommand('pi', 'o/r'), ['pi', 'install', 'git:github.com/o/r']);
+  assert.deepEqual(installCommand('gemini', 'o/r'), ['gemini', 'extensions', 'install', 'https://github.com/o/r']);
+  assert.deepEqual(installCommand('codex', 'o/r'), ['codex', 'plugin', 'marketplace', 'add', 'o/r']);
+  assert.equal(installCommand('claude', 'o/r'), null);
+  assert.equal(installCommand('cursor', 'o/r'), null);
+});
+
+test('enabledPluginList splits plugin@marketplace', () => {
+  const list = enabledPluginList({ enabledPlugins: { 'superpowers@claude-plugins-official': true, 'off@m': false } });
+  assert.deepEqual(list, [{ plugin: 'superpowers', marketplace: 'claude-plugins-official' }]);
+});
+
+test('vendorSkill copies tree and skips existing without force', () => {
+  const home = fakeHome();
+  const repo = mkd(join(tmpdir(), 'wa-vend-'));
+  const r1 = vendorSkill(home, repo, 'impeccable', {});
+  assert.equal(r1.vendored, true);
+  assert.ok(existsSync(join(repo, '.claude', 'skills', 'impeccable', 'SKILL.md')));
+  const r2 = vendorSkill(home, repo, 'impeccable', {});
+  assert.equal(r2.vendored, false);
+  assert.equal(r2.reason, 'exists');
+});
+
+test('planSkillSetup: claude → settings + vendor, no commands', () => {
+  const home = fakeHome();
+  const plan = planSkillSetup({ home, tool: 'claude', selectedPlugins: enabledPluginList(readGlobalClaudeConfig(home)), selectedLocalSkills: ['impeccable'] });
+  assert.ok(plan.settings.enabledPlugins['superpowers@claude-plugins-official']);
+  assert.deepEqual(plan.vendor, ['impeccable']);
+  assert.equal(plan.commands.length, 0);
+});
+
+test('planSkillSetup: antigravity → resolved install commands', () => {
+  const home = fakeHome();
+  const plan = planSkillSetup({ home, tool: 'antigravity', selectedPlugins: enabledPluginList(readGlobalClaudeConfig(home)), selectedLocalSkills: ['impeccable'] });
+  const repos = plan.commands.map((c) => c.repo).sort();
+  assert.deepEqual(repos, ['DietrichGebert/ponytail', 'obra/superpowers']);
+  assert.deepEqual(plan.commands.find((c) => c.repo === 'obra/superpowers').argv, ['agy', 'plugin', 'install', 'https://github.com/obra/superpowers']);
+  assert.ok(plan.notes.some((n) => /Local skills/.test(n))); // local skills note for non-claude
+});
