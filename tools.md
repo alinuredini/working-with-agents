@@ -42,6 +42,12 @@ Follow the conventions, area map, and gotchas in AGENTS.md at the repo root.
 
 Both read `AGENTS.md` at the repo root directly. Drop the file in — done.
 
+## Design context
+
+`DESIGN.md` mounts like any other doc — it's just something the agent reads.
+Reference it from `AGENTS.md` (the template already does); don't fork it into each
+tool's config.
+
 ## The one rule
 
 Whatever the tool, don't fork your context. One file is the truth; every other

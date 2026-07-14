@@ -77,4 +77,6 @@ without knowing it exists. Link to the real doc; don't inline it here. -->
 
 - Security / auth changes: read `docs/SECURITY.md` first, run a security review
   after.
+- UI / design work: follow `DESIGN.md` (tokens, component conventions,
+  archetypes). Delete this line if the project has no UI.
 - _..._
