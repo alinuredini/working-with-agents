@@ -17,6 +17,7 @@ Delete these comments once you've filled it in.
 <!-- One paragraph: what this project is, the stack, and anything an agent must
 know before touching code. No history, no marketing. -->
 
+<!-- wa:fill:overview -->
 > Example: "Acme is a React + TypeScript SPA (Vite) backed by Supabase. There is
 > no local backend — only the Vite dev server. Edge functions run on Deno under
 > `supabase/functions/`."
@@ -27,6 +28,7 @@ know before touching code. No history, no marketing. -->
 and verify its own work is worth ten that can't. Flag any command that's a trap
 (a no-op, a lie, slower than it looks). -->
 
+<!-- wa:fill:commands -->
 ```bash
 <cmd> dev      # how to start it locally + which port
 <cmd> test     # how to run tests
@@ -77,6 +79,5 @@ without knowing it exists. Link to the real doc; don't inline it here. -->
 
 - Security / auth changes: read `docs/SECURITY.md` first, run a security review
   after.
-- UI / design work: follow `DESIGN.md` (tokens, component conventions,
-  archetypes). Delete this line if the project has no UI.
+- UI / design work — follow `DESIGN.md` (tokens, components, archetypes); delete if no UI. <!-- wa:optional:design -->
 - _..._

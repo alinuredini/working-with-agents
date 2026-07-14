@@ -46,7 +46,7 @@ house default here. Cover at least primary-vs-accent, canvas, borders/shadows, t
 <!-- Where the tokens live (point at the real file) + the core set. Everything reads
 from these: swap the token, not the component. -->
 
-Source of truth: `<path to your globals.css / @theme block>`
+Source of truth: `<path to your globals.css / @theme block>` <!-- wa:fill:designsource -->
 
 | Token | Value | Notes |
 | --- | --- | --- |
