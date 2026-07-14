@@ -105,6 +105,11 @@ filled `AGENTS.md` (+ optional `DESIGN.md`) wired to your agent tool.
 4. For design work, add [templates/DESIGN.md](templates/DESIGN.md) too — generate
    it (paste the recipe at the top of the file to your agent) or fill it by hand.
    The `AGENTS.md` template already points at it.
+5. Optional: let `init` set up your agent skills for the repo. It detects your
+   skills from `~/.claude` and, for the tool you pick, either writes a project
+   `.claude/settings.json` (Claude Code) or runs/points at the right per-tool
+   installer (Antigravity/Pi/Gemini/Codex). Opt in with the prompt, or
+   `--install-skills`; skip with `--no-skills`.
 
 That's the whole system. Everything else is refinement.
 
