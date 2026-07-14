@@ -21,7 +21,7 @@ export function applyAgentsFills(text, answers) {
   let out = stripLeadingComment(text);
 
   if (answers.overview) {
-    out = out.replace(/<!-- wa:fill:overview -->\n(?:>.*\n)*/, `${answers.overview}\n`);
+    out = out.replace(/<!-- wa:fill:overview -->\n(?:>.*\n)*/, () => `${answers.overview}\n`);
   } else {
     out = out.replace(/<!-- wa:fill:overview -->\n/, '');
   }
@@ -32,7 +32,7 @@ export function applyAgentsFills(text, answers) {
   if (answers.build) cmds.push(`${answers.build}      # the gate before shipping`);
   if (cmds.length) {
     const block = '```bash\n' + cmds.join('\n') + '\n```';
-    out = out.replace(/<!-- wa:fill:commands -->\n```bash\n[\s\S]*?\n```/, block);
+    out = out.replace(/<!-- wa:fill:commands -->\n```bash\n[\s\S]*?\n```/, () => block);
   } else {
     out = out.replace(/<!-- wa:fill:commands -->\n/, '');
   }
@@ -49,7 +49,7 @@ export function applyAgentsFills(text, answers) {
 export function applyDesignFills(text, answers) {
   let out = text;
   if (answers.designSource) {
-    out = out.replace('<path to your globals.css / @theme block>', answers.designSource);
+    out = out.replace('<path to your globals.css / @theme block>', () => answers.designSource);
   }
   return stripAllMarkers(out);
 }

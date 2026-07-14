@@ -83,3 +83,25 @@ test('wireTool writes CLAUDE.md and cursor rule', () => {
   assert.equal(other.file, null);
   assert.match(other.note, /natively/);
 });
+
+test('applyAgentsFills inserts $-containing answers literally (no $-pattern corruption)', () => {
+  const out = applyAgentsFills(AGENTS, {
+    overview: "Uses $$ and $& and $' in text.", dev: 'x', test: '', build: '', design: true,
+  });
+  assert.match(out, /Uses \$\$ and \$& and \$' in text\./);
+  assert.equal(out.split('Security first.').length - 1, 1); // $' must not duplicate the doc tail
+  assert.doesNotMatch(out, /wa:/);
+});
+
+test('applyDesignFills keeps placeholder + strips marker when no designSource', () => {
+  const tpl = 'Source of truth: `<path to your globals.css / @theme block>` <!-- wa:fill:designsource -->\n';
+  const out = applyDesignFills(tpl, { designSource: '' });
+  assert.match(out, /<path to your globals\.css \/ @theme block>/);
+  assert.doesNotMatch(out, /wa:/);
+});
+
+test('applyDesignFills inserts $-containing source literally', () => {
+  const tpl = 'Source of truth: `<path to your globals.css / @theme block>` <!-- wa:fill:designsource -->\n';
+  const out = applyDesignFills(tpl, { designSource: 'src/$$weird$$.css' });
+  assert.match(out, /src\/\$\$weird\$\$\.css/);
+});
