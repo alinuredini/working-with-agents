@@ -28,6 +28,10 @@ test('init --yes scaffolds filled AGENTS.md + DESIGN.md + CLAUDE.md', async () =
   assert.ok(existsSync(join(dir, 'DESIGN.md')));
   assert.match(readFileSync(join(dir, 'DESIGN.md'), 'utf8'), /Read my design system from this repo/);
 
+  const designOut = readFileSync(join(dir, 'DESIGN.md'), 'utf8');
+  assert.match(designOut, /\n\n\| Token \| Value/); // blank line before token table (GitHub needs it)
+  assert.match(agents, /^# AGENTS\.md/);             // AGENTS.md starts at the H1, no leading blank line
+
   assert.match(readFileSync(join(dir, 'CLAUDE.md'), 'utf8'), /@AGENTS\.md/);
 
   assert.ok(results.some((r) => r.file === 'AGENTS.md' && r.written));

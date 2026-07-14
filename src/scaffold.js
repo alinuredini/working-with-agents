@@ -9,12 +9,12 @@ export function readTemplate(name) {
 }
 
 function stripLeadingComment(text) {
-  const m = text.match(/^\s*<!--[\s\S]*?-->\n?/);
+  const m = text.match(/^\s*<!--[\s\S]*?-->\n*/);
   return m ? text.slice(m[0].length) : text;
 }
 
 function stripAllMarkers(text) {
-  return text.replace(/[ \t]*<!-- wa:[^>]*-->\n?/g, '');
+  return text.replace(/[ \t]*<!-- wa:[^>]*-->/g, '');
 }
 
 export function applyAgentsFills(text, answers) {
