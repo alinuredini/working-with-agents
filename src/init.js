@@ -17,8 +17,32 @@ export const TOOL_CHOICES = [
   { label: 'Other', value: 'other' },
 ];
 
+const TOOL_LABEL = Object.fromEntries(TOOL_CHOICES.map((c) => [c.value, c.label]));
+
 function readJSONSafe(path) { try { return JSON.parse(readFileSync(path, 'utf8')); } catch { return null; } }
 function defaultExec(argv) { execFileSync(argv[0], argv.slice(1), { stdio: 'inherit' }); }
+
+function pick(d) {
+  return { overview: d.overview, dev: d.dev, test: d.test, build: d.build, tool: d.tool, design: d.design, designSource: d.designSource };
+}
+
+export function formatSummary(d) {
+  const or = (v) => (v && String(v).trim() ? v : '—');
+  const stack = [d.framework, d.language, d.packageManager].filter(Boolean).join(' · ') || '—';
+  const design = d.design
+    ? `DESIGN.md${d.designSource ? ` (source: ${d.designSource})` : ' (Tailwind/shadcn detected)'}`
+    : 'skip';
+  return [
+    'Detected this repo:',
+    `  Name     ${or(d.name)}`,
+    `  Stack    ${stack}`,
+    `  Dev      ${or(d.dev)}`,
+    `  Test     ${or(d.test)}`,
+    `  Build    ${or(d.build)}`,
+    `  Tool     ${TOOL_LABEL[d.tool] || d.tool}`,
+    `  Design   ${design}`,
+  ].join('\n');
+}
 
 async function ask(defaults, io) {
   const p = createPrompter(io?.input, io?.output);
@@ -66,9 +90,17 @@ export function runSkillSetup({ home = homedir(), repoDir, tool, selectedPlugins
 
 export async function init({ dir = process.cwd(), yes = false, force = false, io, installSkills = false, noSkills = false, home = homedir(), which = commandExists, exec = defaultExec, log = console.log } = {}) {
   const d = detect(dir);
-  const answers = yes
-    ? { overview: d.overview, dev: d.dev, test: d.test, build: d.build, tool: d.tool, design: d.design, designSource: d.designSource }
-    : await ask(d, io);
+  let answers;
+  if (yes) {
+    answers = pick(d);
+  } else {
+    log(formatSummary(d));
+    const p = createPrompter(io?.input, io?.output);
+    let choice;
+    try { choice = await p.choice('\nUse these? [Y]es · [e]dit · [q]uit ›', ['y', 'e', 'q'], 'y'); } finally { p.close(); }
+    if (choice === 'q') { log('Cancelled — nothing written.'); return { answers: null, results: [], cancelled: true }; }
+    answers = choice === 'e' ? await ask(d, io) : pick(d);
+  }
 
   const results = [];
   const agents = applyAgentsFills(readTemplate('AGENTS.md'), answers);
@@ -106,5 +138,5 @@ export async function init({ dir = process.cwd(), yes = false, force = false, io
     }
   }
 
-  return { answers, results };
+  return { answers, results, cancelled: false };
 }

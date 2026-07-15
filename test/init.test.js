@@ -99,3 +99,15 @@ test('runSkillSetup: gemini runs the gemini installer when present', () => {
   runSkillSetup({ home, repoDir: dir, tool: 'gemini', selectedPlugins: [{ plugin: 'ponytail', marketplace: 'ponytail' }], selectedLocalSkills: [], which: () => true, exec: (argv) => calls.push(argv), log: () => {} });
   assert.deepEqual(calls[0], ['gemini', 'extensions', 'install', 'https://github.com/DietrichGebert/ponytail']);
 });
+
+import { formatSummary } from '../src/init.js';
+
+test('formatSummary shows detected fields, — for missing', () => {
+  const s = formatSummary({ name: 'acme', framework: 'Next.js', language: 'TypeScript', packageManager: 'pnpm', dev: 'pnpm dev', test: '', build: 'pnpm build', tool: 'claude', design: true, designSource: 'src/app/globals.css' });
+  assert.match(s, /Name {5}acme/);
+  assert.match(s, /Stack {4}Next\.js · TypeScript · pnpm/);
+  assert.match(s, /Dev {6}pnpm dev/);
+  assert.match(s, /Test {5}—/);
+  assert.match(s, /Tool {5}Claude Code/);
+  assert.match(s, /Design {3}DESIGN\.md/);
+});
