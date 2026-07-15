@@ -1,5 +1,5 @@
 import { existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, basename } from 'node:path';
 
 function readJSON(path) {
   try { return JSON.parse(readFileSync(path, 'utf8')); } catch { return null; }
@@ -19,6 +19,30 @@ export function runScript(pm, script) {
   return `npm run ${script}`;
 }
 
+const FRAMEWORKS = [
+  ['next', 'Next.js'], ['nuxt', 'Nuxt'], ['@sveltejs/kit', 'SvelteKit'],
+  ['astro', 'Astro'], ['@remix-run/react', 'Remix'], ['remix', 'Remix'],
+  ['@nestjs/core', 'NestJS'], ['vue', 'Vue'], ['svelte', 'Svelte'],
+  ['react', 'React'], ['vite', 'Vite'], ['express', 'Express'],
+];
+
+export function detectFramework(deps = {}) {
+  for (const [dep, label] of FRAMEWORKS) if (dep in deps) return label;
+  return '';
+}
+
+export function detectLanguage(dir, deps = {}) {
+  if (existsSync(join(dir, 'tsconfig.json')) || 'typescript' in deps) return 'TypeScript';
+  if (existsSync(join(dir, 'package.json'))) return 'JavaScript';
+  return '';
+}
+
+export function synthesizeOverview(name, framework, language) {
+  if (!name) return '';
+  const bits = [framework, language].filter(Boolean);
+  return bits.length ? `${name} — a ${bits.join(' + ')} project` : name;
+}
+
 export function detect(dir) {
   const pkg = readJSON(join(dir, 'package.json')) || {};
   const scripts = pkg.scripts || {};
@@ -29,8 +53,12 @@ export function detect(dir) {
   const test = scripts.test ? runScript(pm, 'test') : '';
   const build = scripts.build ? runScript(pm, 'build') : '';
 
-  const design = existsSync(join(dir, 'components.json')) || 'tailwindcss' in deps;
+  const name = pkg.name || basename(dir);
+  const framework = detectFramework(deps);
+  const language = detectLanguage(dir, deps);
+  const overview = pkg.description || synthesizeOverview(name, framework, language);
 
+  const design = existsSync(join(dir, 'components.json')) || 'tailwindcss' in deps;
   const designSource = [
     'src/app/globals.css', 'app/globals.css', 'src/styles/globals.css', 'src/index.css',
   ].find((p) => existsSync(join(dir, p))) || '';
@@ -41,7 +69,7 @@ export function detect(dir) {
   else if (existsSync(join(dir, 'AGENTS.md'))) tool = 'codex';
 
   return {
-    overview: pkg.description || '',
+    name, overview, framework, language, packageManager: pm,
     dev, test, build,
     design, designSource, tool,
     existing: {
