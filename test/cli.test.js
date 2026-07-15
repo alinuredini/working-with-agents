@@ -47,6 +47,7 @@ test('cli: quitting the confirm writes nothing and exits 0', () => {
   const out = execFileSync('node', [CLI, 'init', '--dir', dir], { input: 'q\n', encoding: 'utf8' });
   assert.equal(existsSync(join(dir, 'AGENTS.md')), false);
   assert.match(out, /Cancelled/);
+  assert.doesNotMatch(out, /Next:/);
 });
 
 test('cli: Enter accepts the summary and scaffolds', () => {
