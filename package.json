@@ -1,7 +1,7 @@
 {
   "name": "working-with-agents",
-  "version": "0.1.0",
-  "description": "Onboard coding agents like a senior hire — scaffold AGENTS.md, DESIGN.md, and tool wiring.",
+  "version": "0.2.0",
+  "description": "Onboard coding agents like a senior hire — detect your stack and scaffold AGENTS.md, DESIGN.md, tool wiring, and agent skills.",
   "keywords": ["agents", "ai", "coding-agents", "claude-code", "codex", "cursor", "agents-md", "cli", "scaffold", "onboarding"],
   "type": "module",
   "bin": { "working-with-agents": "bin/cli.js" },
