@@ -27,6 +27,12 @@ export function parseMultiselect(ans, choices, defaultSelected = []) {
   return idxs.map((n) => choices[n - 1].value);
 }
 
+export function parseChoice(ans, keys, defaultKey) {
+  const c = (ans ?? '').trim().toLowerCase()[0];
+  if (!c) return defaultKey;
+  return keys.includes(c) ? c : defaultKey;
+}
+
 export function createPrompter(input = process.stdin, output = process.stdout) {
   const rl = readline.createInterface({ input, output });
   return {
@@ -48,6 +54,9 @@ export function createPrompter(input = process.stdin, output = process.stdout) {
       choices.forEach((c, i) => output.write(`  ${i + 1}) ${c.label}${defaultSelected.includes(c.value) ? ' *' : ''}\n`));
       output.write('(comma-separated numbers, "all", or "none"; empty keeps the * defaults)\n');
       return parseMultiselect(await rl.question('> '), choices, defaultSelected);
+    },
+    async choice(question, keys, defaultKey) {
+      return parseChoice(await rl.question(`${question} `), keys, defaultKey);
     },
     close() { rl.close(); },
   };

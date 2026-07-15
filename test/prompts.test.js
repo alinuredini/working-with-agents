@@ -35,3 +35,12 @@ test('parseMultiselect: numbers, all, none, empty, out-of-range', () => {
   assert.deepEqual(parseMultiselect('all', choices, []), ['a', 'b', 'c']);
   assert.deepEqual(parseMultiselect('9,x', choices, ['a']), []);         // no valid indices → empty (explicit input)
 });
+
+import { parseChoice } from '../src/prompts.js';
+
+test('parseChoice: empty→default, first-char match, junk→default', () => {
+  assert.equal(parseChoice('', ['y', 'e', 'q'], 'y'), 'y');
+  assert.equal(parseChoice('e', ['y', 'e', 'q'], 'y'), 'e');
+  assert.equal(parseChoice('Quit', ['y', 'e', 'q'], 'y'), 'q');
+  assert.equal(parseChoice('z', ['y', 'e', 'q'], 'y'), 'y');
+});
