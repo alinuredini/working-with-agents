@@ -45,7 +45,8 @@ async function main() {
   if (args._[0] !== 'init') { console.error(HELP); return 1; }
 
   console.log('Onboarding this repo…\n');
-  const { results } = await init({ dir: args.dir || process.cwd(), yes: args.yes, force: args.force, installSkills: args.installSkills, noSkills: args.noSkills });
+  const { results, cancelled } = await init({ dir: args.dir || process.cwd(), yes: args.yes, force: args.force, installSkills: args.installSkills, noSkills: args.noSkills });
+  if (cancelled) return 0;
   for (const r of results) {
     if (r.written) console.log(`  created ${r.file}`);
     else if (r.reason === 'exists') console.log(`  skipped ${r.file} (exists; --force to overwrite)`);

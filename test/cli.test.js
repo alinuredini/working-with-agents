@@ -40,3 +40,18 @@ test('parseArgs reads --install-skills and --no-skills', () => {
   const b = parseArgs(['init', '--no-skills']);
   assert.equal(b.noSkills, true);
 });
+
+test('cli: quitting the confirm writes nothing and exits 0', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'wa-cliq-'));
+  writeFileSync(join(dir, 'package.json'), JSON.stringify({ name: 'x' }));
+  const out = execFileSync('node', [CLI, 'init', '--dir', dir], { input: 'q\n', encoding: 'utf8' });
+  assert.equal(existsSync(join(dir, 'AGENTS.md')), false);
+  assert.match(out, /Cancelled/);
+});
+
+test('cli: Enter accepts the summary and scaffolds', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'wa-clia-'));
+  writeFileSync(join(dir, 'package.json'), JSON.stringify({ name: 'x', scripts: { dev: 'vite' } }));
+  execFileSync('node', [CLI, 'init', '--dir', dir, '--no-skills'], { input: '\n', encoding: 'utf8' });
+  assert.ok(existsSync(join(dir, 'AGENTS.md')));
+});
