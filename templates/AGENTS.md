@@ -80,4 +80,5 @@ without knowing it exists. Link to the real doc; don't inline it here. -->
 - Security / auth changes: read `docs/SECURITY.md` first, run a security review
   after.
 - UI / design work — follow `DESIGN.md` (tokens, components, archetypes); delete if no UI. <!-- wa:optional:design -->
+- Stack choices and hosting rules — follow `STACK.md`; delete if you don't have one.
 - _..._

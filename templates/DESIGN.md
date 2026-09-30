@@ -16,6 +16,9 @@ agent and let it read your existing styles:
     - Fill the sections below with my real values — don't invent. Mark anything
       you're unsure about with TODO.
 
+No existing styles yet? Start from a curated look instead and copy its tokens:
+https://github.com/alinuredini/working-with-agents/blob/main/looks/
+
 The four "Start here" sections are enough to be useful on day one; the rest are
 optional — add them once you have more than one surface. Terse beats thorough.
 Update it in the same change as the design. Delete these comments when done.
@@ -65,6 +68,20 @@ Source of truth: `<path to your globals.css / @theme block>` <!-- wa:fill:design
 
 - _..._
 - _..._
+
+## Universal rules
+
+<!-- These hold for every look. They're what keeps UI from reading as AI-made.
+Keep them unless you have a reason; add your own under "Never do this". -->
+
+- **No eyebrow labels** — no small uppercase line above a heading. Let the heading speak.
+- **No one-sided borders or accent bars** — no colored left edge on a tile, no gradient strip on top of a card. Use a tinted fill, a filled chip, or full hairline borders.
+- **No gradient text, glass effects, or glow blobs.**
+- **No grids of identical icon cards** — vary the layout or cut the section.
+- **Headlines use a font's normal-width cut** — never condensed or extended.
+- **Calm needs a few loud accents** — the one status that matters gets a saturated solid pill; everything secondary stays soft. If everything is muted, nothing is visible.
+- **Visible copy is one clause.** Explanations go behind an (i) hint; security warnings stay visible.
+- **Motion is quick and optional** — feedback ≤150ms, never blocking, every animation respects reduced-motion, and nothing above the fold waits for scripts to appear.
 
 <!-- ─────────────────────  OPTIONAL — add later  ───────────────────── -->
 
