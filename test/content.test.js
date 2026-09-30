@@ -150,3 +150,10 @@ test('playbook: ui-that-doesnt-look-ai', () => {
     assert.match(md, r);
   for (const slug of LOOKS) assert.ok(md.includes(`../looks/${slug}.md`), `missing link to ${slug}`);
 });
+
+test('playbook: mockup-to-build', () => {
+  const md = checkPlaybook('playbooks/mockup-to-build.md');
+  for (const r of [/Figma/, /Claude Design/, /HTML mock/i, /founder/i, /designer/i, /fictional/i, /light\/dark/i])
+    assert.match(md, r);
+  assert.ok(md.includes('../looks/'), 'founders start from a look — must link looks/');
+});
