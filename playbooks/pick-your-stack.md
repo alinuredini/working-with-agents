@@ -37,7 +37,8 @@ can go down, change its pricing, or need an update.
 signing in with a work account, which businesses often require) push you towards
 a dedicated identity service. Sensitive data (health, money, children) needs more
 care about where data is stored. On iPhone, widgets, Live Activities (the live
-updates on the lock screen) and Apple Watch push you towards a native app.
+updates on the lock screen) and Apple Watch mean writing at least some native
+code — and if they are the core of the product, a native app.
 
 A few more terms you'll meet: a **CMS** is the admin screen where you edit site
 text and images without code. A **static page** is built once and served as-is —
@@ -100,12 +101,12 @@ These show how the answers lead to a choice. They're examples, not defaults.
 - **Situation:** one person, a few months, needs logins, a database, and file uploads.
 - **Starting point:** Supabase for logins, database, and file storage in one place, with a mainstream web framework on top.
 - **Why:** one service covers most of the backend, its free plan is generous, and agents know it well.
-- **When it changes:** big-company customers ask for company logins, or you outgrow the plan's limits.
+- **When it changes:** big-company customers need more than Supabase's SSO offers, or you outgrow the plan's limits.
 
 ### B2B app selling to companies
 
 - **Situation:** customers are businesses that want their staff to sign in with work accounts, plus audit trails.
-- **Starting point:** a dedicated identity service such as Auth0 or Keycloak alongside your app.
+- **Starting point:** a dedicated identity service alongside your app — Auth0 (hosted, paid) or Keycloak (free but self-hosted, so it needs an engineer to run).
 - **Why:** company logins (SSO) and access rules are what these customers check first; identity services do them properly.
 - **When it changes:** you're still validating the idea — start simpler and add this when the first company asks.
 
@@ -114,6 +115,6 @@ These show how the answers lead to a choice. They're examples, not defaults.
 - **Situation:** you need an app in the App Store and Google Play.
 - **Starting point:** React Native (with Expo) — one codebase for iPhone and Android, and web skills carry over.
 - **Why:** one team, one codebase, faster releases.
-- **When it changes:** widgets, Live Activities, or Apple Watch are core to the product — then native iOS (Swift) is worth it.
+- **When it changes:** widgets and Live Activities are possible from React Native, but those parts are still written in native Swift. An Apple Watch app needs native. If these are the heart of the product, go native iOS from the start.
 
 Fill in your own brief: [STACK.md template](../templates/STACK.md).

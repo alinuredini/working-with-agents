@@ -46,7 +46,18 @@ precious accent, nothing boxed in.
 - Bold sans-serif headlines.
 - More than one accent colour.
 
-Also follow the universal rules: https://github.com/alinuredini/working-with-agents/blob/main/templates/DESIGN.md#universal-rules
+## Universal rules
+
+These hold for every look — keep them as-is. Source: https://github.com/alinuredini/working-with-agents/blob/main/templates/DESIGN.md#universal-rules
+
+- **No eyebrow labels** — no small uppercase line above a heading. Let the heading speak.
+- **No one-sided borders or accent bars** — no colored left edge on a tile, no gradient strip on top of a card. Use a tinted fill, a filled chip, or full hairline borders.
+- **No gradient text, glass effects, or glow blobs.**
+- **No grids of identical icon cards** — vary the layout or cut the section.
+- **Headlines use a font's normal-width cut** — never condensed or extended.
+- **Calm needs a few loud accents** — the one status that matters gets a saturated solid pill; everything secondary stays soft. If everything is muted, nothing is visible.
+- **Visible copy is one clause.** Explanations go behind an (i) hint; security warnings stay visible.
+- **Motion is quick and optional** — feedback ≤150ms, never blocking, every animation respects reduced-motion, and nothing above the fold waits for scripts to appear.
 
 ## Dark mode
 

@@ -1,6 +1,15 @@
 <!--
 The one message to paste into your agent (Claude Code, Cursor, Codex, Lovable…)
-after dropping AGENTS.md, DESIGN.md and STACK.md into an empty folder.
+once AGENTS.md, DESIGN.md and STACK.md are in your project folder.
+
+Getting the files: run `npx working-with-agents init` in the folder (it writes
+AGENTS.md and DESIGN.md), or download them from
+https://github.com/alinuredini/working-with-agents/tree/main/templates
+Add STACK.md from the same folder, and swap DESIGN.md for a look if you like:
+https://github.com/alinuredini/working-with-agents/tree/main/looks
+In a brand-new project it's fine to leave the AGENTS.md blanks empty — the agent
+fills them in as the project takes shape.
+
 Copy everything inside the box.
 -->
 

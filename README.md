@@ -32,7 +32,8 @@ Building a product with an agent but not writing the code yourself? Start here:
   Claude Design for the system, an HTML mock per feature, then build.
 - **[Six curated looks](looks/)** — pick one as your starting DESIGN.md.
 - **[First prompt](templates/first-prompt.md)** — the one message to paste once
-  the files are in place.
+  the files are in place. To get them: run `npx working-with-agents init` in your
+  project folder, then add [STACK.md](templates/STACK.md) and, if you like, a look.
 
 A browser-based builder that assembles this kit for you is coming at
 [alinuredini.com/working-with-agents](https://alinuredini.com/working-with-agents).

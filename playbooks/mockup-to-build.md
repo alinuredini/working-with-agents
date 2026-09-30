@@ -57,9 +57,10 @@ the app's design system that was hundreds of changes out of date. Always read th
 system from the latest version of the main branch, not whatever copy is lying
 around.
 
-**Invented styles render blank.** In Claude Design, style classes the codebase
-doesn't already use come out unstyled — the build only includes classes the code
-actually uses. Stick to the components and classes that exist.
+**Invented styles render blank.** Claude Design only renders
+styles your code already defines — anything the design agent makes up comes out
+plain and unstyled. Ask it to build with your existing components instead of
+inventing new ones.
 
 **Thumbnails lie about size.** Sizes judged from a contact sheet of small previews
 were wrong. Compare real, full-size screenshots.

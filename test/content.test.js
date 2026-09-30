@@ -183,3 +183,58 @@ test('README has the designers & founders section', () => {
   for (const p of ['playbooks/pick-your-stack.md', 'playbooks/ui-that-doesnt-look-ai.md', 'playbooks/mockup-to-build.md', 'looks/', 'templates/STACK.md', 'templates/first-prompt.md'])
     assert.ok(md.includes(p), `README missing ${p}`);
 });
+
+// ── Final-review fixes ──
+
+function universalRulesBlock(md) {
+  const m = md.match(/^## Universal rules\n[\s\S]*?(?=\n## |\n<!-- ─)/m);
+  assert.ok(m, 'no Universal rules section');
+  return m[0].split('\n').filter((l) => l.startsWith('- ')).join('\n');
+}
+
+test('each look carries the universal rules inline, identical to the DESIGN template', () => {
+  const rules = universalRulesBlock(read('templates/DESIGN.md'));
+  for (const slug of LOOKS) assert.equal(universalRulesBlock(read(`looks/${slug}.md`)), rules, slug);
+});
+
+test('soft pastel: tone rule matches its own tokens', () => {
+  const md = read('looks/soft-pastel.md');
+  assert.doesNotMatch(md, /More than two pastel tones/);
+  assert.match(md, /more than three tones/i);
+});
+
+test('every look\'s dark mode tells the agent to re-check contrast', () => {
+  for (const slug of LOOKS) {
+    const md = read(`looks/${slug}.md`);
+    const dark = md.slice(md.indexOf('## Dark mode'));
+    assert.match(dark, /contrast/i, slug);
+  }
+});
+
+test('mockup-to-build: Claude Design trap is in plain words, not Tailwind jargon', () => {
+  const md = read('playbooks/mockup-to-build.md');
+  assert.doesNotMatch(md, /style classes/i);
+  assert.match(md, /styles your code already defines/i);
+});
+
+test('pick-your-stack: Keycloak upkeep flagged, Supabase SSO not misstated, mobile nuance', () => {
+  const md = read('playbooks/pick-your-stack.md');
+  assert.match(md, /Keycloak[^\n]*self-hosted/i);
+  assert.match(md, /more than Supabase's SSO/i);
+  assert.match(md, /Apple Watch[^\n]*native/i);
+  assert.match(md, /widgets[^\n]*Swift/i);
+  assert.doesNotMatch(md, /widgets, Live Activities, or Apple Watch are core to the product — then native iOS \(Swift\) is worth it/);
+});
+
+test('first prompt and README tell a founder how to get the files', () => {
+  const fp = read('templates/first-prompt.md');
+  assert.match(fp, /npx working-with-agents init/);
+  assert.match(fp, /blank/i);
+  assert.match(read('README.md'), /npx working-with-agents init[\s\S]{0,400}STACK\.md|STACK\.md[\s\S]{0,400}npx working-with-agents init/);
+});
+
+test('DESIGN recipe keeps the universal rules and counts sections correctly', () => {
+  const t = read('templates/DESIGN.md');
+  assert.match(t, /Universal rules[^\n]*as-is/i);
+  assert.doesNotMatch(t, /The four "Start here" sections/);
+});

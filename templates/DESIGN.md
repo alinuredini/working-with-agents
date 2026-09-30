@@ -15,11 +15,13 @@ agent and let it read your existing styles:
     - Infer the taste signals (density, roundedness, contrast, motion) from code.
     - Fill the sections below with my real values — don't invent. Mark anything
       you're unsure about with TODO.
+    - Keep the Universal rules section as-is; add project-specific bans
+      under "Never do this".
 
 No existing styles yet? Start from a curated look instead and copy its tokens:
 https://github.com/alinuredini/working-with-agents/blob/main/looks/
 
-The four "Start here" sections are enough to be useful on day one; the rest are
+The "Start here" sections are enough to be useful on day one; the rest are
 optional — add them once you have more than one surface. Terse beats thorough.
 Update it in the same change as the design. Delete these comments when done.
 -->
