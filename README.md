@@ -20,6 +20,23 @@ after starts from the same baseline.
 
 The tool is interchangeable. The operating model is not.
 
+## For designers & founders
+
+Building a product with an agent but not writing the code yourself? Start here:
+
+- **[Pick your stack](playbooks/pick-your-stack.md)** — five questions decide it,
+  not hype. Fill in [STACK.md](templates/STACK.md) and let the agent propose options.
+- **[UI that doesn't look AI-made](playbooks/ui-that-doesnt-look-ai.md)** — the
+  handful of rules that separate designed from generated.
+- **[Mockup to build](playbooks/mockup-to-build.md)** — Figma for brand rules,
+  Claude Design for the system, an HTML mock per feature, then build.
+- **[Six curated looks](looks/)** — pick one as your starting DESIGN.md.
+- **[First prompt](templates/first-prompt.md)** — the one message to paste once
+  the files are in place.
+
+A browser-based builder that assembles this kit for you is coming at
+[alinuredini.com/working-with-agents](https://alinuredini.com/working-with-agents).
+
 ## The principles
 
 **1. Context lives in the repo, not the chat.**
@@ -68,6 +85,8 @@ color, motion. Write it down like everything else: put your tokens, component
 conventions, and design non-negotiables in a doc the agent reads (`DESIGN.md`) and
 point `AGENTS.md` at it. Don't author it by hand — have the agent read your
 existing styles and draft it. See [templates/DESIGN.md](templates/DESIGN.md).
+New to design systems? Start from one of the [curated looks](looks/) and the
+[universal rules](playbooks/ui-that-doesnt-look-ai.md).
 
 ## What's in here
 

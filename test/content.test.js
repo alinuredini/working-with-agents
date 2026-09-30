@@ -164,3 +164,22 @@ test('playbook: pick-your-stack', () => {
     assert.match(md, r);
   assert.ok(md.includes('../templates/STACK.md'), 'must link the STACK.md template');
 });
+
+test('every relative link in content resolves', () => {
+  const broken = [];
+  for (const f of contentFiles()) {
+    if (f.startsWith('templates/')) continue; // templates use absolute links (Task 2 test)
+    for (const [, target] of read(f).matchAll(/\]\((?!https?:|mailto:|#)([^)#\s]+)(?:#[^)]*)?\)/g)) {
+      const p = join(ROOT, dirname(f), target);
+      if (!existsSync(p)) broken.push(`${f} -> ${target}`);
+    }
+  }
+  assert.deepEqual(broken, []);
+});
+
+test('README has the designers & founders section', () => {
+  const md = read('README.md');
+  assert.match(md, /^## For designers & founders$/m);
+  for (const p of ['playbooks/pick-your-stack.md', 'playbooks/ui-that-doesnt-look-ai.md', 'playbooks/mockup-to-build.md', 'looks/', 'templates/STACK.md', 'templates/first-prompt.md'])
+    assert.ok(md.includes(p), `README missing ${p}`);
+});
