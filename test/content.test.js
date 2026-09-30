@@ -157,3 +157,10 @@ test('playbook: mockup-to-build', () => {
     assert.match(md, r);
   assert.ok(md.includes('../looks/'), 'founders start from a look — must link looks/');
 });
+
+test('playbook: pick-your-stack', () => {
+  const md = checkPlaybook('playbooks/pick-your-stack.md');
+  for (const r of [/no best stack/i, /upkeep/i, /Astro/, /Supabase/, /Auth0|Keycloak/, /React Native/, /Live Activities/, /widgets/i])
+    assert.match(md, r);
+  assert.ok(md.includes('../templates/STACK.md'), 'must link the STACK.md template');
+});
