@@ -75,3 +75,53 @@ test('templates never use relative links to repo-only content', () => {
     assert.deepEqual(rel, [], `${f} has relative links`);
   }
 });
+
+const LOOKS = ['ink-and-paper', 'editorial', 'soft-pastel', 'calm-enterprise', 'friendly-bold', 'atelier'];
+const TOKENS = ['--canvas', '--surface', '--ink', '--muted', '--hairline', '--accent', '--on-accent', '--loud', '--radius', '--shadow'];
+const LOOK_SECTIONS = ['## Fits', '## Tokens', '## Type', '## Component rules', '## What would break this look', '## Dark mode'];
+
+function tokensOf(md) {
+  const css = md.match(/```css\n([\s\S]*?)```/);
+  assert.ok(css, 'no css block');
+  return Object.fromEntries([...css[1].matchAll(/(--[a-z0-9-]+):\s*([^;]+);/g)].map((m) => [m[1], m[2].trim()]));
+}
+
+function luminance(hex) {
+  const n = hex.replace('#', '');
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(n.slice(i, i + 2), 16) / 255)
+    .map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+function contrast(a, b) {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+}
+
+test('contrast helper matches known WCAG values', () => {
+  assert.equal(Math.round(contrast('#000000', '#ffffff') * 10) / 10, 21);
+  assert.ok(contrast('#ffffff', '#ff5a1f') < 4.5); // the trap this guard exists for
+});
+
+for (const slug of LOOKS) {
+  test(`look ${slug}: sections, tokens, universal-rules link`, () => {
+    const md = read(`looks/${slug}.md`);
+    for (const s of LOOK_SECTIONS) assert.ok(md.includes(s), `missing ${s}`);
+    const tk = tokensOf(md);
+    for (const name of TOKENS) assert.ok(tk[name], `missing ${name}`);
+    assert.match(md, /templates\/DESIGN\.md#universal-rules/);
+  });
+
+  test(`look ${slug}: text pairs pass 4.5:1`, () => {
+    const tk = tokensOf(read(`looks/${slug}.md`));
+    const pairs = [['--ink', '--canvas'], ['--muted', '--canvas'], ['--ink', '--surface'],
+                   ['--on-accent', '--accent'], ['--on-accent', '--loud']];
+    for (const [fg, bg] of pairs) {
+      const c = contrast(tk[fg], tk[bg]);
+      assert.ok(c >= 4.5, `${fg} on ${bg} = ${c.toFixed(2)}`);
+    }
+  });
+}
+
+test('examples/DESIGN.md points at the Ink & Paper look', () => {
+  assert.match(read('examples/DESIGN.md'), /looks\/ink-and-paper\.md/);
+});
