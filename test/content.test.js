@@ -125,3 +125,28 @@ for (const slug of LOOKS) {
 test('examples/DESIGN.md points at the Ink & Paper look', () => {
   assert.match(read('examples/DESIGN.md'), /looks\/ink-and-paper\.md/);
 });
+
+const PLAYBOOK_SECTIONS = ['## The short version', '## Why', '## Paste this to your agent', '## Traps we hit'];
+
+function checkPlaybook(rel) {
+  const md = read(rel);
+  let last = -1;
+  for (const s of PLAYBOOK_SECTIONS) {
+    const i = md.indexOf(s);
+    assert.ok(i > last, `${rel}: "${s}" missing or out of order`);
+    last = i;
+  }
+  const short = md.slice(md.indexOf('## The short version'), md.indexOf('## Why'));
+  const bullets = short.split('\n').filter((l) => /^[-*] /.test(l)).length;
+  assert.ok(bullets >= 3 && bullets <= 5, `${rel}: short version has ${bullets} bullets (want 3–5)`);
+  const prompt = md.slice(md.indexOf('## Paste this to your agent'), md.indexOf('## Traps we hit'));
+  assert.match(prompt, /```text\n[\s\S]+?```/, `${rel}: prompt must be a fenced text block`);
+  return md;
+}
+
+test('playbook: ui-that-doesnt-look-ai', () => {
+  const md = checkPlaybook('playbooks/ui-that-doesnt-look-ai.md');
+  for (const r of [/eyebrow/i, /one-sided/i, /gradient text/i, /identical icon cards/i, /loud accent/i, /\(i\)/])
+    assert.match(md, r);
+  for (const slug of LOOKS) assert.ok(md.includes(`../looks/${slug}.md`), `missing link to ${slug}`);
+});
